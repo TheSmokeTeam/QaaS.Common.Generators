@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QaaS.Common.Generators", "QaaS.Common.Generators\QaaS.Common.Generators.csproj", "{549CD75F-16B3-418C-BCA9-B4238F412520}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QaaS.Common.Generators.Tests", "QaaS.Common.Generators.Tests\QaaS.Common.Generators.Tests.csproj", "{E3BC7BE2-BE6B-43B7-9B9B-EBDC949DBEE4}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{549CD75F-16B3-418C-BCA9-B4238F412520}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{549CD75F-16B3-418C-BCA9-B4238F412520}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{549CD75F-16B3-418C-BCA9-B4238F412520}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{549CD75F-16B3-418C-BCA9-B4238F412520}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E3BC7BE2-BE6B-43B7-9B9B-EBDC949DBEE4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E3BC7BE2-BE6B-43B7-9B9B-EBDC949DBEE4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E3BC7BE2-BE6B-43B7-9B9B-EBDC949DBEE4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E3BC7BE2-BE6B-43B7-9B9B-EBDC949DBEE4}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

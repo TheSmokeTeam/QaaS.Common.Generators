@@ -39,13 +39,13 @@ public class JsonNodeFieldInjectorTests
             {
                 Path = "$.name",
                 ValueType = InjectionValueType.String,
-                String = new ManualValue<string> { Value = "REDA" }
+                String = new ManualValue<string> { Value = "Alice" }
             }
         };
         
         injector = new JsonNodeFieldInjector(generationsEnumerableDictionary, jsonFieldReplacements);
         expectedJson = JsonNode.DeepClone();
-        expectedJson["name"] = "REDA";
+        expectedJson["name"] = "Alice";
         
         yield return new TestCaseData(injector, expectedJson).SetName("SingleStaticJsonFieldReplacements");
         
@@ -106,7 +106,7 @@ public class JsonNodeFieldInjectorTests
             {
                 Path = "$.name",
                 ValueType = InjectionValueType.String,
-                String = new ManualValue<string> { Value = "REDA" },
+                String = new ManualValue<string> { Value = "Alice" },
                 Integer = new ManualValue<int> { Value = 16 },
                 Double = new ManualValue<double> {Value = 1337.1337},
                 Boolean = new ManualValue<bool> { Value = false},
@@ -117,7 +117,7 @@ public class JsonNodeFieldInjectorTests
         
         injector = new JsonNodeFieldInjector(generationsEnumerableDictionary, jsonFieldReplacements);
         expectedJson = JsonNode.DeepClone();
-        expectedJson["name"] = "REDA";
+        expectedJson["name"] = "Alice";
         
         yield return new TestCaseData(injector, expectedJson)
             .SetName("SingleStaticJsonFieldReplacementsWithMultipleConfigurations");
@@ -143,7 +143,7 @@ public class JsonNodeFieldInjectorTests
             {
                 Path = "$.zero",
                 ValueType = InjectionValueType.Null,
-                String = new ManualValue<string> { Value = "REDA" },
+                String = new ManualValue<string> { Value = "Alice" },
                 Integer = new ManualValue<int> { Value = 16 },
                 Double = new ManualValue<double> {Value = 1337.1337},
                 Boolean = new ManualValue<bool> { Value = false},

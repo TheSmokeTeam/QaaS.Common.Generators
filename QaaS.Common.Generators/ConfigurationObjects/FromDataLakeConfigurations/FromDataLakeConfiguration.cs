@@ -9,8 +9,8 @@ namespace QaaS.Common.Generators.ConfigurationObjects.FromDataLakeConfigurations
  Display(Name = nameof(FromDataLake))]
 public record FromDataLakeConfiguration
 {
-    [DefaultValue("REDA"), Description("The trino server to connnect to")]
-    public string TrinoServerUri { get; set; } = "REDA";
+    [DefaultValue("http://localhost:8080"), Description("The trino server to connnect to")]
+    public string TrinoServerUri { get; set; } = "http://localhost:8080";
     
     [Required, Description("The username for connecting to the trino server")]
     public string? Username { get; set; }
@@ -18,8 +18,8 @@ public record FromDataLakeConfiguration
     [Required, Description("The password for connecting to the trino server")]
     public string? Password { get; set; }
     
-    [DefaultValue("REDA"), Description("The client tag to use for connection")]
-    public string ClientTag { get; set; } = "REDA";
+    [DefaultValue("qaas"), Description("The client tag to use for connection")]
+    public string ClientTag { get; set; } = "qaas";
     
     [DefaultValue("hive"), Description("The datalake catalog to query")]
     public string Catalog { get; set; } = "hive";

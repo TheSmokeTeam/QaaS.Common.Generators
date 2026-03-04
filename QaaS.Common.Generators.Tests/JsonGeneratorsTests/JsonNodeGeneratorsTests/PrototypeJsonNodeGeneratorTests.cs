@@ -15,8 +15,8 @@ public class PrototypeJsonNodeGeneratorTests
     {
         new TestCaseData(new JsonObject()).SetName("EmptyJsonObject"),
         new TestCaseData(new JsonArray()).SetName("EmptyJsonArray"),
-        new TestCaseData(new JsonObject { ["name"] = "REDA", ["age"] = 21 }).SetName("JsonObject"),
-        new TestCaseData(new JsonArray { "REDA", 21 }).SetName("JsonArray")
+        new TestCaseData(new JsonObject { ["name"] = "Alice", ["age"] = 21 }).SetName("JsonObject"),
+        new TestCaseData(new JsonArray { "Alice", 21 }).SetName("JsonArray")
     };
   
 

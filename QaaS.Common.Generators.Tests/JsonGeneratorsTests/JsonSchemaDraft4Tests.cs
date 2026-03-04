@@ -40,7 +40,7 @@ public class JsonSchemaDraft4Tests
             {
                 ["Name"] = new JsonObject
                 {
-                    ["const"] = "REDA"
+                    ["const"] = "Alice"
                 },
                 ["Age"] = new JsonObject
                 {
@@ -60,7 +60,7 @@ public class JsonSchemaDraft4Tests
         
         var firstExpectedJsonResult = new JsonObject
         {
-            ["Name"] = "REDA",
+            ["Name"] = "Alice",
             ["Age"] = 21,
             ["Address"] = new JsonObject
             {
@@ -175,7 +175,7 @@ public class JsonSchemaDraft4Tests
                 ["Age"] = new JsonObject { ["const"] = 30 },
                 ["City"] = new JsonObject { ["const"] = "new york" },
                 ["Test"] = new JsonObject { ["type"] = "null" },
-                ["Enum"] = new JsonObject { ["const"] = new JsonArray { "REDA", "REDA", "REDA" } },
+                ["Enum"] = new JsonObject { ["const"] = new JsonArray { "SampleValue", "SampleValue", "SampleValue" } },
                 ["Floors"] = new JsonObject { ["const"] = new JsonObject {
                     ["F1"] = 1,
                     ["F2"] = 2,
@@ -192,7 +192,7 @@ public class JsonSchemaDraft4Tests
                 {
                     Path = "$.Name",
                     ValueType = InjectionValueType.String,
-                    String = new ManualValue<string> { Value = "REDA"}
+                    String = new ManualValue<string> { Value = "Alice"}
                 }
             },
             OutputObjectType = JsonParserType.Binary,
@@ -206,11 +206,11 @@ public class JsonSchemaDraft4Tests
 
         var expectedOutput = new JsonParsersTests.Person
         {
-            Name = "REDA",
+            Name = "Alice",
             Age = 30,
             City = "new york",
             Test = null!,
-            Enum = new List<string> { "REDA", "REDA", "REDA" },
+            Enum = new List<string> { "SampleValue", "SampleValue", "SampleValue" },
             Floors = new Dictionary<string, int>
             {
                 ["F1"] = 1,

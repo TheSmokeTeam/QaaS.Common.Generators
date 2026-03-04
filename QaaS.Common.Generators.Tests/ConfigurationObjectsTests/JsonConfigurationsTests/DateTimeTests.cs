@@ -153,7 +153,7 @@ public class DateTimeTests
         // Arrange
         var dateTimeConfig = new DateTime
         {
-            TimeZone = "REDA's fake timezone"
+            TimeZone = "NotARealTimeZone"
         };
         
         // Act + Assert

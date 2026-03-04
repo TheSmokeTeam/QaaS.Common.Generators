@@ -35,7 +35,7 @@ public class JsonTests
 
         var jsonParameter = new JsonObject
         {
-            ["Name"] = "REDA",
+            ["Name"] = "Alice",
             ["Age"] = "21",
             ["Address"] = new JsonObject
             {
@@ -153,7 +153,7 @@ public class JsonTests
             ["Age"] = 30,
             ["City"] = "new york",
             ["Test"] = null,
-            ["Enum"] = new JsonArray { "REDA", "REDA", "REDA" },
+            ["Enum"] = new JsonArray { "SampleValue", "SampleValue", "SampleValue" },
             ["Floors"] = new JsonObject
             {
                 ["F1"] = 1,
@@ -171,7 +171,7 @@ public class JsonTests
                 {
                     Path = "$.Name",
                     ValueType = InjectionValueType.String,
-                    String = new ManualValue<string> { Value = "REDA" }
+                    String = new ManualValue<string> { Value = "Alice" }
                 }
             },
             OutputObjectType = JsonParserType.Binary,
@@ -185,11 +185,11 @@ public class JsonTests
 
         var expectedOutput = new Person
         {
-            Name = "REDA",
+            Name = "Alice",
             Age = 30,
             City = "new york",
             Test = null!,
-            Enum = new List<string> { "REDA", "REDA", "REDA" },
+            Enum = new List<string> { "SampleValue", "SampleValue", "SampleValue" },
             Floors = new Dictionary<string, int>
             {
                 ["F1"] = 1,

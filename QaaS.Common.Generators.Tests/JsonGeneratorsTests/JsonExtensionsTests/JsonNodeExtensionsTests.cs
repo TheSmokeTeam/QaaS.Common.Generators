@@ -38,9 +38,9 @@ public class JsonNodeExtensionsTests
 
     private static IEnumerable<TestCaseData> _replaceCaseData = new[]
     {
-        new TestCaseData("$.hello", "REDA", new JsonObject
+        new TestCaseData("$.hello", "SampleValue", new JsonObject
         {
-            ["hello"] = "REDA",
+            ["hello"] = "SampleValue",
             ["arrayExample"] = new JsonArray
             {
                 "all possible examples",
@@ -128,7 +128,7 @@ public class JsonNodeExtensionsTests
             "$.hello",
             new Person
             {
-                Name = "REDA",
+                Name = "Alice",
                 Age = 21,
                 City = "Anytown",
                 Test = null,
@@ -142,7 +142,7 @@ public class JsonNodeExtensionsTests
             {
                 ["hello"] = new JsonObject
                 {
-                    ["Name"] = "REDA",
+                    ["Name"] = "Alice",
                     ["Age"] = 21,
                     ["City"] = "Anytown",
                     ["Test"] = null,
@@ -195,7 +195,7 @@ public class JsonNodeExtensionsTests
     {
         JsonNode json = new JsonObject
         {
-            ["Name"] = "REDA",
+            ["Name"] = "Alice",
             ["Age"] = "21",
             ["Address"] = new JsonObject
             {
@@ -218,7 +218,7 @@ public class JsonNodeExtensionsTests
         json = new JsonArray
         {
             1,
-            "REDA",
+            "SampleValue",
             true,
             new JsonObject
             {

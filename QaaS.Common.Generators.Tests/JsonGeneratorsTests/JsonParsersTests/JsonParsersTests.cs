@@ -25,7 +25,7 @@ public class JsonParsersTests
             ""Age"": 30,
             ""City"": ""new york"",
             ""Test"": null,
-            ""Enum"": [""REDA"", ""REDA"", ""REDA""],
+            ""Enum"": [""SampleValue"", ""SampleValue"", ""SampleValue""],
             ""Floors"": {
                 ""F1"": 1,
                 ""F2"": 2,
@@ -45,9 +45,9 @@ public class JsonParsersTests
             Test = null,
             Enum = new List<string>
             {
-                "REDA",
-                "REDA",
-                "REDA"
+                "SampleValue",
+                "SampleValue",
+                "SampleValue"
             },
             Floors = new Dictionary<string, int>
             {
@@ -80,7 +80,7 @@ public class JsonParsersTests
             Age = 30,
             City = "new york",
             Test = "",
-            Enum = { "REDA", "REDA", "REDA" },
+            Enum = { "SampleValue", "SampleValue", "SampleValue" },
             Floors = { { "F1", 1 }, { "F2", 2 }, { "F3", 3 } }
         };
         
@@ -110,7 +110,7 @@ public class JsonParsersTests
             Age = 30,
             City = "new york",
             Test = "",
-            Enum = { "REDA", "REDA", "REDA" },
+            Enum = { "SampleValue", "SampleValue", "SampleValue" },
             Floors = { { "F1", 1 }, { "F2", 2 }, { "F3", 3 } }
         };
         
@@ -151,9 +151,9 @@ public class JsonParsersTests
                 new XElement("Age", 30),
                 new XElement("City", "new york"),
                 new XElement("Test"),
-                new XElement("Enum", "REDA"),
-                new XElement("Enum", "REDA"),
-                new XElement("Enum", "REDA"),
+                new XElement("Enum", "SampleValue"),
+                new XElement("Enum", "SampleValue"),
+                new XElement("Enum", "SampleValue"),
                 new XElement("Floors",
                     new XElement("F1", 1),
                     new XElement("F2", 2),
@@ -186,9 +186,9 @@ public class JsonParsersTests
                 new XElement("Age", 30),
                 new XElement("City", "new york"),
                 new XElement("Test"),
-                new XElement("Enum", "REDA"),
-                new XElement("Enum", "REDA"),
-                new XElement("Enum", "REDA"),
+                new XElement("Enum", "SampleValue"),
+                new XElement("Enum", "SampleValue"),
+                new XElement("Enum", "SampleValue"),
                 new XElement("Floors",
                     new XElement("F1", 1),
                     new XElement("F2", 2),

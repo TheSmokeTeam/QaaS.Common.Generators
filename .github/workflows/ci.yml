@@ -73,7 +73,7 @@ jobs:
           $packages = Get-ChildItem "${{ env.PACKAGE_OUTPUT_DIRECTORY }}\QaaS.Common.Generators.*.nupkg"
           foreach ($package in $packages) {
             # Only push the main QaaS.Common.Generators package, not QaaS.Common.Generators.* (e.g., QaaS.Common.Generators.Tests)
-            if ($package.Name -match "^QaaS\.Runner\.[0-9]") {
+            if ($package.Name -match "^QaaS\.Common.Generators\.[0-9]") {
               dotnet nuget push $package.FullName -k ${{ secrets.NUGET_AUTH_TOKEN }} -s https://api.nuget.org/v3/index.json
             }
           }

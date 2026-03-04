@@ -8,10 +8,8 @@
 
     <ItemGroup>
       <PackageReference Include="JsonPath.Net" Version="0.8.0" />
-      <PackageReference Include="QaaS.Framework.Executions" Version="1.0.0-beta.1" />
-      <PackageReference Include="Serilog.Extensions.Logging" Version="8.0.0" />
+      <PackageReference Include="QaaS.Framework.Executions" Version="1.0.1-alpha.3" />
       <PackageReference Include="System.IO.Abstractions" Version="16.1.26" />
-      <PackageReference Include="Trino.Data.ADO" Version="2024.12.24.1" />
     </ItemGroup>
 
 </Project>

@@ -37,7 +37,7 @@ public class JsonParserToProtobufMessage : IJsonParser
         /*
          * GOD I'M SORRY FOR ANYONE WHO IS READING THIS.
          * One day PLEASE fix this and remove Newtonsoft.Json implementation.
-         * REDA and me (REDA) couldn't do it, maybe you will be able to.
+         * dumb and me (dumber) couldn't do it, maybe you will be able to.
          */
         return JsonConvert.DeserializeObject(jsonNode.ToJsonString(), _typeObject, _jsonSerializerSettings) 
                ?? throw new InvalidOperationException($"Couldn't parse json generation to type {_typeObject}" +

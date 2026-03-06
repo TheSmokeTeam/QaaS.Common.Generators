@@ -39,6 +39,29 @@ jobs:
       - name: Test solution
         run: dotnet test ${{ env.SOLUTION_PATH }} --configuration ${{ env.CONFIGURATION }} --no-restore --maxcpucount
 
+      - name: Validate package metadata
+        shell: powershell
+        run: |
+          [xml]$csproj = Get-Content "${{ env.PROJECT_TO_PACK }}"
+          $properties = $csproj.Project.PropertyGroup
+          if ($null -eq $properties.Description -or [string]::IsNullOrWhiteSpace($properties.Description)) {
+            throw "Packed project must include <Description>."
+          }
+          if ($properties.PackageReadmeFile -ne "README.md") {
+            throw "Packed project must include <PackageReadmeFile>README.md</PackageReadmeFile>."
+          }
+          if ($properties.IncludeSymbols -ne "true") {
+            throw "Packed project must include symbols (<IncludeSymbols>true</IncludeSymbols>)."
+          }
+          if ($properties.SymbolPackageFormat -ne "snupkg") {
+            throw "Packed project must generate snupkg (<SymbolPackageFormat>snupkg</SymbolPackageFormat>)."
+          }
+          $readmeItem = $csproj.Project.ItemGroup.None |
+            Where-Object { $_.Include -eq "..\README.md" -and $_.Pack -eq "true" -and $_.PackagePath -eq "/" }
+          if ($null -eq $readmeItem) {
+            throw "Packed project must pack the solution README into the package root."
+          }
+
       # --- DEPLOYMENT STEPS (Run only on tags) ---
 
       - name: Get Version
@@ -70,10 +93,16 @@ jobs:
         if: startsWith(github.ref, 'refs/tags/')
         shell: powershell
         run: |
-          $packages = Get-ChildItem "${{ env.PACKAGE_OUTPUT_DIRECTORY }}\QaaS.Common.Generators.*.nupkg"
-          foreach ($package in $packages) {
-            # Only push the main QaaS.Common.Generators package, not QaaS.Common.Generators.* (e.g., QaaS.Common.Generators.Tests)
-            if ($package.Name -match "^QaaS\.Common\.Generators\.[0-9]") {
-              dotnet nuget push $package.FullName -k ${{ secrets.NUGET_AUTH_TOKEN }} -s https://api.nuget.org/v3/index.json
+          $mainPackages = Get-ChildItem "${{ env.PACKAGE_OUTPUT_DIRECTORY }}\QaaS.Common.Generators.*.nupkg" |
+            Where-Object { $_.Name -match "^QaaS\.Common\.Generators\.[0-9]" -and $_.Name -notmatch "\.symbols\.nupkg$" }
+          foreach ($package in $mainPackages) {
+            dotnet nuget push $package.FullName -k ${{ secrets.NUGET_AUTH_TOKEN }} -s https://api.nuget.org/v3/index.json
+
+            $symbolPackageName = [System.IO.Path]::GetFileNameWithoutExtension($package.Name) + ".snupkg"
+            $symbolPackagePath = Join-Path $package.DirectoryName $symbolPackageName
+            if (Test-Path $symbolPackagePath) {
+              dotnet nuget push $symbolPackagePath -k ${{ secrets.NUGET_AUTH_TOKEN }} -s https://api.nuget.org/v3/index.json
+            } else {
+              throw "Expected symbol package was not found: $symbolPackagePath"
             }
           }

@@ -3,13 +3,12 @@ using QaaS.Framework.SDK.Session.DataObjects;
 namespace QaaS.Common.Generators.ConfigurationObjects.JsonConfigurations;
 
 /// <summary>
-/// This class represents an enumerable collection of data records.
-/// It provides functionality to retrieve the next record in the collection.
+/// Represents a reusable sequence of generated records that can be iterated with an out-of-range policy.
 /// </summary>
 public record GenerationEnumerable
 {
     /// <summary>
-    /// The collection of data records.
+    /// The generated records available for iteration.
     /// </summary>
     private IEnumerable<Data<object>> Results { get; }
     
@@ -29,11 +28,10 @@ public record GenerationEnumerable
     }
 
     /// <summary>
-    /// Retrieves the next record in the collection. If the current index is at the end of the collection and the provided policy is false,
-    /// a new Data<object> with a null body is returned. Otherwise, the index is reset to 0 and the first record in the collection is returned.
+    /// Retrieves the next record in the sequence and applies the configured out-of-range behavior when the end is reached.
     /// </summary>
-    /// <param name="generationOutOfRangeLoopPolicy">The policy to handle the end of the collection.</param>
-    /// <returns>The next record in the collection.</returns>
+    /// <param name="generationOutOfRangeLoopPolicy">Determines whether iteration loops back to the beginning or returns a record with a null body.</param>
+    /// <returns>The next available <see cref="Data{T}"/> entry.</returns>
     public Data<object> GetNextRecord(OutOfRangePolicy generationOutOfRangeLoopPolicy)
     {
         if (Index == Results.Count())

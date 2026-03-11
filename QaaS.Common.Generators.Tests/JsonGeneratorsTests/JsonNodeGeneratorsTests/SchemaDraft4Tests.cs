@@ -397,18 +397,4 @@ public class SchemaDraft4Tests
         Assert.That(resultJsonArrayString.Distinct().Count(), Is.EqualTo(resultJsonArrayString.Count));
     }
 
-    private static IEnumerable<TestCaseData> _jsonEnumAndMultipleTypeRulesGenerationCaseDatas = new[]
-    {
-        new TestCaseData(new JsonObject
-            {
-                ["type"] = "array",
-                ["minItems"] = 0,
-                ["maxItems"] = 0,
-                ["items"] = new JsonObject { ["type"] = "string" }
-            },
-            0,
-            0,
-            false
-        ).SetName("EmptyJsonArray")
-    };
 }

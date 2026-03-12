@@ -1,5 +1,6 @@
 using System.Collections.Immutable;
 using System.Reflection;
+using System.Text;
 using Amazon.S3.Model;
 using Microsoft.Extensions.Logging;
 using Moq;
@@ -21,6 +22,71 @@ public class FromS3Tests
         typeof(FromS3).GetMethod("GetStorageKeyFromData", BindingFlags.NonPublic | BindingFlags.Instance)!;
 
     private static readonly byte[] EmptyContent = [];
+
+    private static IEnumerable<TestCaseData> LoadMetadataFirstParityCaseSource()
+    {
+        const string prefix = "metadata/";
+        var mixedObjects = new List<KeyValuePair<S3Object, byte[]>>
+        {
+            new(new S3Object
+            {
+                Key = $"{prefix}payload.json",
+                ETag = "\"etag-json\"",
+                Size = 18,
+                StorageClass = "STANDARD"
+            }, Encoding.UTF8.GetBytes("{\"kind\":\"json\"}")),
+            new(new S3Object
+            {
+                Key = $"{prefix}payload.bin",
+                ETag = "\"etag-bin\"",
+                Size = 4,
+                StorageClass = "GLACIER"
+            }, [0, 1, 2, 255]),
+            new(new S3Object
+            {
+                Key = $"{prefix}payload.txt",
+                ETag = "\"etag-text\"",
+                Size = 11,
+                StorageClass = "STANDARD_IA"
+            }, Encoding.UTF8.GetBytes("hello world"))
+        };
+
+        yield return new TestCaseData(
+            new FromS3Config
+            {
+                S3 = new S3Config { StorageBucket = "Test", Prefix = prefix },
+                DataArrangeOrder = DataArrangeOrder.AsciiAsc,
+                StorageMetaData = StorageMetaData.FullPath
+            },
+            mixedObjects).SetName("LoadMetadataFirstParity_FullPathStorage");
+
+        yield return new TestCaseData(
+            new FromS3Config
+            {
+                S3 = new S3Config { StorageBucket = "Test", Prefix = prefix },
+                DataArrangeOrder = DataArrangeOrder.AsciiAsc,
+                StorageMetaData = StorageMetaData.RelativePath
+            },
+            mixedObjects).SetName("LoadMetadataFirstParity_RelativePathStorage");
+
+        yield return new TestCaseData(
+            new FromS3Config
+            {
+                S3 = new S3Config { StorageBucket = "Test", Prefix = prefix },
+                DataArrangeOrder = DataArrangeOrder.AsciiAsc,
+                StorageMetaData = StorageMetaData.ItemName
+            },
+            mixedObjects).SetName("LoadMetadataFirstParity_ItemNameStorage");
+
+        yield return new TestCaseData(
+            new FromS3Config
+            {
+                S3 = new S3Config { StorageBucket = "Test", Prefix = prefix },
+                DataArrangeOrder = DataArrangeOrder.AsciiAsc,
+                StorageMetaData = StorageMetaData.None
+            },
+            mixedObjects).SetName("LoadMetadataFirstParity_NoStorageMetadata");
+    }
 
     public static IEnumerable<TestCaseData> TestGetStorageKeysCaseSource()
     {
@@ -295,6 +361,28 @@ public class FromS3Tests
         Assert.That(areEqual);
     }
 
+    [Test, TestCaseSource(nameof(LoadMetadataFirstParityCaseSource))]
+    public void TestGenerate_LoadMetadataFirst_ShouldMatchDirectLoadAcrossDifferentS3ObjectTypes(
+        FromS3Config baseConfig,
+        List<KeyValuePair<S3Object, byte[]>> s3MockData)
+    {
+        var metadataFirstOutput = GenerateFromS3(baseConfig with { LoadMetadataFirst = true }, s3MockData);
+        var directLoadOutput = GenerateFromS3(baseConfig with { LoadMetadataFirst = false }, s3MockData);
+
+        Assert.That(metadataFirstOutput.Count, Is.EqualTo(directLoadOutput.Count));
+
+        for (var index = 0; index < metadataFirstOutput.Count; index++)
+        {
+            var metadataFirstData = metadataFirstOutput[index];
+            var directLoadData = directLoadOutput[index];
+
+            Assert.That(metadataFirstData.Body, Is.EqualTo(directLoadData.Body),
+                $"Body mismatch at index {index} for key {metadataFirstData.MetaData?.Storage?.Key}");
+            Assert.That(metadataFirstData.MetaData?.Storage?.Key, Is.EqualTo(directLoadData.MetaData?.Storage?.Key),
+                $"Storage metadata mismatch at index {index}");
+        }
+    }
+
     [Test, TestCaseSource(nameof(TestGetStorageKeysCaseSource))]
     public void TestGetStorageKeyFromData_CallFunctionWithBuildS3AndConfiguration_ShouldReturnExpectedOutput(
         string input, string? expectedOutput, StorageMetaData storageMetaData, string prefix)
@@ -453,5 +541,43 @@ public class FromS3Tests
         Assert.That(metadataResult, Is.Not.Null);
         Assert.That(metadataResult.Count(), Is.EqualTo(numberOfItemsToGenerate));
         
+    }
+
+    private static List<Data<object>> GenerateFromS3(
+        FromS3Config config,
+        IEnumerable<KeyValuePair<S3Object, byte[]>> s3MockData)
+    {
+        var objectDataByKey = s3MockData.ToDictionary(item => item.Key.Key, item => item);
+        var mockS3Client = new Mock<IS3Client>();
+
+        mockS3Client.Setup(m =>
+                m.ListAllObjectsInS3Bucket(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(),
+                    It.IsAny<bool>()))
+            .ReturnsAsync(s3MockData.Select(item => item.Key).ToList());
+
+        mockS3Client.Setup(m =>
+                m.GetObjectFromObjectMetadata(It.IsAny<S3Object>(), It.IsAny<string>()))
+            .Returns((S3Object s3Object, string _) =>
+            {
+                var objectData = objectDataByKey[s3Object.Key];
+                return new KeyValuePair<S3Object, byte[]?>(objectData.Key, objectData.Value);
+            });
+
+        mockS3Client.Setup(m =>
+                m.GetAllObjectsInS3BucketUnOrdered(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(),
+                    It.IsAny<bool>()))
+            .Returns(s3MockData.Select(item => new KeyValuePair<S3Object, byte[]?>(item.Key, item.Value)));
+
+        var mockGenerator = new Mock<FromS3>();
+        mockGenerator.Protected().Setup<IS3Client>("BuildS3Client")
+            .Returns(mockS3Client.Object);
+        mockGenerator.CallBase = true;
+
+        var generator = mockGenerator.Object;
+        generator.Configuration = config;
+        generator.Context = Globals.Context;
+
+        return generator.Generate(new List<SessionData>().ToImmutableList(),
+            new List<DataSource>().ToImmutableList()).ToList();
     }
 }

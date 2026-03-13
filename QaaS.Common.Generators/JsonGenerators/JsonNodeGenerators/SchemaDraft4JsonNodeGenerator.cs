@@ -10,6 +10,8 @@ namespace QaaS.Common.Generators.JsonGenerators.JsonNodeGenerators;
 /// </summary>
 public class SchemaDraft4JsonNodeGenerator : IJsonNodeGenerator
 {
+    private const int MaxUniqueItemGenerationAttempts = 1000;
+
     private ILogger Logger { get; set; }
     private string? JsonSchemaId { get; set; }
     private JsonObject BaseJsonObjectSchema { get; set; }
@@ -183,21 +185,28 @@ public class SchemaDraft4JsonNodeGenerator : IJsonNodeGenerator
     private JsonArray GenerateJsonArrayUniqueItemsEnabled(IEnumerable<JsonObject> jsonArraySchemaItems, int jsonArrayLength, string jsonSchemaPath)
     {
         var jsonArray = new JsonArray();
-        var jsonArrayUniqueItemsHashArray = new List<int>();
+        var jsonArrayUniqueItems = new HashSet<string>(StringComparer.Ordinal);
         
         for (var jsonArrayItemIndex = 0; jsonArrayItemIndex < jsonArrayLength; jsonArrayItemIndex++)
         {
             var jsonArrayItemSchema = jsonArraySchemaItems.ElementAt(Random.Next(jsonArraySchemaItems.Count()));
             var jsonArrayItemGeneration = Generate(jsonArrayItemSchema, jsonSchemaPath + $"[{jsonArrayItemIndex}]");
-            var jsonArrayItemGenerationHashCode = jsonArrayItemGeneration.ToJsonString().GetHashCode();
+            var jsonArrayItemGenerationSerialized = jsonArrayItemGeneration?.ToJsonString() ?? "null";
+            var generationAttempts = 0;
 
-            while (jsonArrayUniqueItemsHashArray.Contains(jsonArrayItemGenerationHashCode))
+            while (!jsonArrayUniqueItems.Add(jsonArrayItemGenerationSerialized))
             {
+                generationAttempts++;
+                if (generationAttempts >= MaxUniqueItemGenerationAttempts)
+                    throw new InvalidOperationException(
+                        $"Could not generate {jsonArrayLength} unique items for schema path {jsonSchemaPath}. " +
+                        $"Generation kept producing duplicate value {jsonArrayItemGenerationSerialized}.");
+
                 jsonArrayItemGeneration = Generate(jsonArrayItemSchema, jsonSchemaPath + $"[{jsonArrayItemIndex}]");
+                jsonArrayItemGenerationSerialized = jsonArrayItemGeneration?.ToJsonString() ?? "null";
             }
             
             jsonArray.Add(jsonArrayItemGeneration);
-            jsonArrayUniqueItemsHashArray.Add(jsonArrayItemGenerationHashCode);
         }
 
         return jsonArray;

@@ -397,6 +397,37 @@ public class SchemaDraft4Tests
         Assert.That(resultJsonArrayString.Distinct().Count(), Is.EqualTo(resultJsonArrayString.Count));
     }
 
+    [Test]
+    public void Generate_WhenUniqueItemsGenerationProducesDuplicates_RetriesUntilUniqueValueIsGenerated()
+    {
+        var duplicateThenUniqueGenerator = new Mock<IJsonValueGenerator>();
+        duplicateThenUniqueGenerator
+            .SetupSequence(generator => generator.GenerateValue(It.IsAny<JsonObject>(), It.IsAny<string>()))
+            .Returns(JsonValue.Create("duplicate"))
+            .Returns(JsonValue.Create("duplicate"))
+            .Returns(JsonValue.Create("unique"));
+
+        var generatorFactory = new Mock<IJsonValueGeneratorFactory>();
+        generatorFactory
+            .Setup(factory => factory.GetJsonValueGenerator(It.IsAny<string>(), It.IsAny<int>()))
+            .Returns(duplicateThenUniqueGenerator.Object);
+
+        var schema = new JsonObject
+        {
+            ["type"] = "array",
+            ["minItems"] = 2,
+            ["maxItems"] = 2,
+            ["uniqueItems"] = true,
+            ["items"] = new JsonObject { ["type"] = "string" }
+        };
+
+        var generator = new SchemaDraft4JsonNodeGenerator(_logger, generatorFactory.Object, schema, seed: 1);
+
+        var result = (JsonArray)generator.Generate();
+
+        Assert.That(result.Select(item => item!.ToJsonString()), Is.EquivalentTo(new[] { "\"duplicate\"", "\"unique\"" }));
+    }
+
     private static IEnumerable<TestCaseData> _jsonEnumAndMultipleTypeRulesGenerationCaseDatas = new[]
     {
         new TestCaseData(new JsonObject

@@ -20,7 +20,7 @@ public class FromS3 : BaseExternalSourceBasedGenerator<FromS3Config, KeyValuePai
         Configuration.LoadMetadataFirst
             ? _s3Client!.ListAllObjectsInS3Bucket(Configuration.S3!.StorageBucket!,
                     Configuration.S3.Prefix,
-                    Configuration.S3.Delimiter, Configuration.S3.SkipEmptyObjects).Result
+                    Configuration.S3.Delimiter, Configuration.S3.SkipEmptyObjects).GetAwaiter().GetResult()
                 .Select(s3Object =>
                     new KeyValuePair<string, KeyValuePair<S3Object, byte[]>>(s3Object.Key,
                         new KeyValuePair<S3Object, byte[]>(s3Object, [])))

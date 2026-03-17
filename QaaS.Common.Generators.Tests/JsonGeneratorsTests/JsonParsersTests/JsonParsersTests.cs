@@ -102,7 +102,6 @@ public class JsonParsersTests
     {
         // Arrange
         var parsingCount = 100000;
-        var protobufMessageResults = new List<PersonTestNamespace.Person>();
         
         var expectedSerializedObject = new PersonTestNamespace.Person
         {
@@ -126,16 +125,11 @@ public class JsonParsersTests
         // Assert
         jsonDeserializedObject.ShouldDeepEqual(expectedSerializedObject);
         
-        // Act
+        // Act + Assert
         for (var indexCount = 0; indexCount < parsingCount; indexCount++)
         {
-            protobufMessageResults.Add((jsonParser.Parse(JsonNode) as PersonTestNamespace.Person)!);
-        }
-        
-        // Assert
-        for (var indexCount = 0; indexCount < parsingCount; indexCount++)
-        {
-            protobufMessageResults[indexCount].ShouldDeepEqual(expectedSerializedObject);
+            var parsed = (jsonParser.Parse(JsonNode) as PersonTestNamespace.Person)!;
+            parsed.ShouldDeepEqual(expectedSerializedObject);
         }
     }
     
@@ -176,7 +170,6 @@ public class JsonParsersTests
     {
         // Arrange
         var parsingCount = 100000;
-        var xDocumentResults = new List<XNode>();
         
         var jsonNode = new JsonObject { { "Person", JsonNode.DeepClone() } };
 
@@ -199,16 +192,11 @@ public class JsonParsersTests
 
         var jsonParser = new JsonParserToXml();
         
-        // Act
+        // Act + Assert
         for (var indexCount = 0; indexCount < parsingCount; indexCount++)
         {
-            xDocumentResults.Add((jsonParser.Parse(jsonNode) as XNode)!);
-        }
-        
-        // Assert
-        for (var indexCount = 0; indexCount < parsingCount; indexCount++)
-        {
-            Assert.That(XNode.DeepEquals(xDocumentResults[indexCount], expectedSerializedObject));
+            var parsed = (jsonParser.Parse(jsonNode) as XNode)!;
+            Assert.That(XNode.DeepEquals(parsed, expectedSerializedObject));
         }
     }
 }

@@ -6,12 +6,14 @@ using NUnit.Framework;
 using QaaS.Common.Generators.ConfigurationObjects.FromExternalSourceConfigurations;
 using QaaS.Common.Generators.FromExternalSourceGenerators;
 using QaaS.Framework.SDK.DataSourceObjects;
+using QaaS.Framework.SDK.Hooks.Generator;
 using QaaS.Framework.SDK.Session.DataObjects;
 using QaaS.Framework.SDK.Session.SessionDataObjects;
+using QaaS.Framework.Serialization;
 
 namespace QaaS.Common.Generators.Tests.FromExternalSourceGenerators;
 
-public class CsvFromFileSystemTests
+public class FromCSVTests
 {
     private static readonly string TestsDirectoryPath = Path.Join("TestData");
     private static readonly string CsvDirectoryRelativePath = Path.Join("CsvFiles");
@@ -19,7 +21,7 @@ public class CsvFromFileSystemTests
     [Test]
     public void TestGenerate_WithCsvFiles_ShouldReturnRowsInFileOrderWithStorageKeys()
     {
-        var generator = BuildGenerator(new CsvFromFileSystemConfig
+        var generator = BuildGenerator(new FromCSVConfig
         {
             DataArrangeOrder = DataArrangeOrder.AsciiAsc,
             StorageMetaData = StorageMetaData.ItemName,
@@ -41,7 +43,7 @@ public class CsvFromFileSystemTests
     [Test]
     public void TestGenerate_WithHeaderlessCsv_ShouldUseConfiguredColumnNames()
     {
-        var generator = BuildGenerator(new CsvFromFileSystemConfig
+        var generator = BuildGenerator(new FromCSVConfig
         {
             DataArrangeOrder = DataArrangeOrder.AsciiAsc,
             StorageMetaData = StorageMetaData.ItemName,
@@ -64,7 +66,7 @@ public class CsvFromFileSystemTests
     [Test]
     public void TestGenerate_WithCount_ShouldStopAfterRequestedNumberOfRows()
     {
-        var generator = BuildGenerator(new CsvFromFileSystemConfig
+        var generator = BuildGenerator(new FromCSVConfig
         {
             Count = 2,
             DataArrangeOrder = DataArrangeOrder.AsciiAsc,
@@ -83,9 +85,59 @@ public class CsvFromFileSystemTests
         AssertRow(output[1], "orders-a.csv#2", ("Id", "2"), ("Product", "Mouse, Wireless"), ("Quantity", "1"));
     }
 
-    private static CsvFromFileSystem BuildGenerator(CsvFromFileSystemConfig configuration)
+    [Test]
+    public void TestRetrieve_WithJsonSerializerAndDeserializer_ShouldRoundTripCsvRows()
     {
-        var mockGenerator = new Mock<CsvFromFileSystem>();
+        var generator = BuildGenerator(new FromCSVConfig
+        {
+            DataArrangeOrder = DataArrangeOrder.AsciiAsc,
+            StorageMetaData = StorageMetaData.ItemName,
+            FileSystem = new FileSystemConfig
+            {
+                Path = CsvDirectoryRelativePath,
+                SearchPattern = "orders-a.csv"
+            }
+        });
+
+        var serializingDataSource = new DataSource
+        {
+            Name = "OrdersCsvSerialized",
+            Generator = generator,
+            DataSourceList = ImmutableArray<DataSource>.Empty,
+            Serializer = SerializerFactory.BuildSerializer(SerializationType.Json)
+        };
+
+        var serializedRows = serializingDataSource.Retrieve(ImmutableArray<SessionData>.Empty).ToList();
+        Assert.That(serializedRows.Count, Is.EqualTo(2));
+        Assert.That(serializedRows[0].Body, Is.TypeOf<byte[]>());
+
+        var deserializingGenerator = new Mock<IGenerator>();
+        deserializingGenerator.Setup(generatorMock =>
+                generatorMock.Generate(It.IsAny<IImmutableList<SessionData>>(), It.IsAny<IImmutableList<DataSource>>()))
+            .Returns(serializedRows);
+
+        var deserializingDataSource = new DataSource
+        {
+            Name = "OrdersCsvDeserialized",
+            Generator = deserializingGenerator.Object,
+            DataSourceList = ImmutableArray<DataSource>.Empty,
+            Deserializer = DeserializerFactory.BuildDeserializer(SerializationType.Json),
+            DeserializerSpecificType = typeof(Dictionary<string, string>)
+        };
+
+        var output = deserializingDataSource.Retrieve(ImmutableArray<SessionData>.Empty).ToList();
+
+        Assert.That(output.Count, Is.EqualTo(2));
+        Assert.That(output[0].Body, Is.TypeOf<Dictionary<string, string>>());
+        var firstRow = (Dictionary<string, string>)output[0].Body!;
+        Assert.That(firstRow["Id"], Is.EqualTo("1"));
+        Assert.That(firstRow["Product"], Is.EqualTo("Keyboard"));
+        Assert.That(output[0].MetaData?.Storage?.Key, Is.EqualTo("orders-a.csv#1"));
+    }
+
+    private static FromCSV BuildGenerator(FromCSVConfig configuration)
+    {
+        var mockGenerator = new Mock<FromCSV>();
         mockGenerator.Protected().Setup<KeyValuePair<string, IFileSystem>>("BuildFileSystem")
             .Returns(new KeyValuePair<string, IFileSystem>(TestsDirectoryPath, new FileSystem()));
         mockGenerator.CallBase = true;

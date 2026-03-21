@@ -9,7 +9,7 @@ using QaaS.Framework.SDK.Session.SessionDataObjects;
 
 namespace QaaS.Common.Generators.FromExternalSourceGenerators;
 
-public class CsvFromFileSystem : BaseFromFileSystem<CsvFromFileSystemConfig>
+public class FromCSV : BaseFromFileSystem<FromCSVConfig>
 {
     public override IEnumerable<Data<object>> Generate(
         IImmutableList<SessionData> sessionDataList,

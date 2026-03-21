@@ -1,16 +1,15 @@
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using QaaS.Common.Generators.CsvGenerators;
-using QaaS.Common.Generators.FromDataSourcesGenerators;
+using QaaS.Common.Generators.FromExternalSourceGenerators;
 using QaaS.Framework.Configurations.CustomValidationAttributes;
 
-namespace QaaS.Common.Generators.ConfigurationObjects.FromDataSourcesConfigurations;
+namespace QaaS.Common.Generators.ConfigurationObjects.FromExternalSourceConfigurations;
 
-[Description("Supports generating structured row objects from multiple DataSources that contain CSV text. " +
-             "`DataSources`: Used. Each item must be a UTF-8 encoded byte array or string that contains CSV content. " +
-             "`SessionData`: Passed to used DataSources."),
- Display(Name = nameof(FromCsvDataSources))]
-public record FromCsvDataSourcesConfiguration : BaseFromDataSourcesConfiguration, ICsvGeneratorConfiguration
+[Description("Retrieves CSV rows from files in a configured path in the file system. " +
+             "`DataSources`: Not used. `SessionData`: Not used."),
+ Display(Name = nameof(FromCSV))]
+public record FromCSVConfig : FromFileSystemConfig, ICsvGeneratorConfiguration
 {
     [Required, MinLength(1),
      Description("The delimiter used between columns in the CSV content."),

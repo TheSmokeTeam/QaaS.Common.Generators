@@ -30,6 +30,7 @@ The solution is focused on one NuGet package that provides reusable generator im
 ### [QaaS.Common.Generators](./QaaS.Common.Generators/)
 - JSON generation from prototypes and Draft-4 schemas (`Json`, `JsonSchemaDraft4`).
 - Data-source based generation (`FromDataSources`, `FromLettuceDataSources`, `FromSessionDataDataSources`, `Stacking`).
+- CSV row generation from file-system inputs (`FromCSV`).
 - External source loading from file system and S3 (`FromFileSystem`, `LettuceFromFileSystem`, `FromS3`).
 - Data lake querying through Trino (`FromDataLake`).
 - Typed configuration model set for each generator family under `ConfigurationObjects`.

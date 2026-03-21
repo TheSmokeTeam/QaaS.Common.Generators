@@ -51,7 +51,7 @@ public abstract class
     /// <returns> The given list arranged correctly </returns>
     /// <exception cref="NotSupportedException"> If DataArrangeOrder type is not supported exception is thrown
     /// </exception>
-    private IEnumerable<KeyValuePair<string, TFilesProperties>> ArrangeDataInOrder(
+    protected IEnumerable<KeyValuePair<string, TFilesProperties>> ArrangeDataInOrder(
         IEnumerable<KeyValuePair<string, TFilesProperties>> objectProperties)
     {
         Context.Logger.LogInformation("Arranging metadata source " +
@@ -78,7 +78,7 @@ public abstract class
     /// </summary>
     /// <param name="elementsToFilter">Elements to iterate over</param>
     /// <returns>The values that match the regex</returns>
-    private IEnumerable<KeyValuePair<string, TFilesProperties>> RemoveElementsThatDontMatchRegex(
+    protected IEnumerable<KeyValuePair<string, TFilesProperties>> RemoveElementsThatDontMatchRegex(
         IEnumerable<KeyValuePair<string, TFilesProperties>> elementsToFilter)
         => elementsToFilter.Where(obj =>
             Regex.IsMatch(obj.Key.ToString(), Configuration.DataUuidRegexExpression));
@@ -90,7 +90,7 @@ public abstract class
     /// <param name="str"> The string to extract the numeric value from </param>
     /// <returns> The numeric value found in the string's beginning </returns>
     /// <exception cref="Exception"> If the numeric value found could not be parsed throws an exception </exception>
-    private static long ExtractNumericValue(string str)
+    protected static long ExtractNumericValue(string str)
     {
         var numericPart = Regex.Match(str, @"-?\d+").Value;
         if (!long.TryParse(numericPart, out var numericValue))

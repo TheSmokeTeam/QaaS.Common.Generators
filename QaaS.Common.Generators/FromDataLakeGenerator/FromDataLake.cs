@@ -11,6 +11,9 @@ using Trino.Data.ADO.Server;
 
 namespace QaaS.Common.Generators.FromDataLakeGenerator;
 
+/// <summary>
+/// Retrieves rows from the configured data lake query and exposes each row as a generated JSON object.
+/// </summary>
 public class FromDataLake: BaseGenerator<FromDataLakeConfiguration>
 {
     public override IEnumerable<Data<object>> Generate(IImmutableList<SessionData> sessionDataList, 

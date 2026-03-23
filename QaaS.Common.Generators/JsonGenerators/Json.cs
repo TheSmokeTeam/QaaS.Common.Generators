@@ -4,6 +4,9 @@ using QaaS.Common.Generators.JsonGenerators.JsonNodeGenerators;
 
 namespace QaaS.Common.Generators.JsonGenerators;
 
+/// <summary>
+/// Generates JSON data from a configured prototype document.
+/// </summary>
 public class Json : BaseJsonGenerator<JsonConfiguration>
 {
     /// <inheritdoc />

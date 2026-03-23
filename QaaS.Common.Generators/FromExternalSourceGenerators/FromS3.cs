@@ -6,6 +6,9 @@ using QaaS.Framework.SDK.Session.MetaDataObjects;
 
 namespace QaaS.Common.Generators.FromExternalSourceGenerators;
 
+/// <summary>
+/// Retrieves data from objects in a configured S3 bucket and prefix.
+/// </summary>
 public class FromS3 : BaseExternalSourceBasedGenerator<FromS3Config, KeyValuePair<S3Object, byte[]>>
 {
     private const char S3SeparatorChar = '/';

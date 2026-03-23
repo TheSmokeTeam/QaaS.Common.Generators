@@ -5,6 +5,9 @@ using QaaS.Common.Generators.JsonGenerators.JsonValueGenerators;
 
 namespace QaaS.Common.Generators.JsonGenerators;
 
+/// <summary>
+/// Generates JSON data that conforms to a configured JSON Schema Draft 4 document.
+/// </summary>
 public class JsonSchemaDraft4 : BaseJsonGenerator<JsonSchemaConfiguration>
 {
     /// <inheritdoc />

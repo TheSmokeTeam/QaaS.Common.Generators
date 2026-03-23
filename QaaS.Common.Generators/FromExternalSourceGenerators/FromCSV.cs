@@ -9,6 +9,9 @@ using QaaS.Framework.SDK.Session.SessionDataObjects;
 
 namespace QaaS.Common.Generators.FromExternalSourceGenerators;
 
+/// <summary>
+/// Reads CSV files from the configured file-system path and turns each row into generated data items.
+/// </summary>
 public class FromCSV : BaseFromFileSystem<FromCSVConfig>
 {
     public override IEnumerable<Data<object>> Generate(

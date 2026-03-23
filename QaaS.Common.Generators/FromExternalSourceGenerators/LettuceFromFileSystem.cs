@@ -6,6 +6,9 @@ using ArgumentException = System.ArgumentException;
 
 namespace QaaS.Common.Generators.FromExternalSourceGenerators;
 
+/// <summary>
+/// Retrieves lettuce-formatted files from the configured file-system path and exposes them as generated messages with their routing key metadata.
+/// </summary>
 public class LettuceFromFileSystem : BaseFromFileSystem<LettuceFromFileSystemConfig>
 {
     /// <summary>

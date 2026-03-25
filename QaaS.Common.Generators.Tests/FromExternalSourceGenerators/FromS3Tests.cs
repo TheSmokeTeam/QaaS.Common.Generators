@@ -533,13 +533,14 @@ public class FromS3Tests
         // This ensures that the lazy evaluation works for the metadata loading itself
         var loadObjectsMetadataMethod = typeof(FromS3).GetMethod("LoadObjectsMetadata",
             BindingFlags.NonPublic | BindingFlags.Instance);
-        var metadataResult =
-            loadObjectsMetadataMethod.Invoke(generator, null) as
-                IEnumerable<KeyValuePair<string, KeyValuePair<S3Object, byte[]>>>;
+        Assert.That(loadObjectsMetadataMethod, Is.Not.Null);
+        var metadataResult = loadObjectsMetadataMethod.Invoke(generator, null) as
+            IEnumerable<KeyValuePair<string, KeyValuePair<S3Object, byte[]>>>;
+        var metadataEntries = metadataResult?.ToList();
 
         // Verify that the metadata loading happened correctly
-        Assert.That(metadataResult, Is.Not.Null);
-        Assert.That(metadataResult.Count(), Is.EqualTo(numberOfItemsToGenerate));
+        Assert.That(metadataEntries, Is.Not.Null);
+        Assert.That(metadataEntries!.Count, Is.EqualTo(numberOfItemsToGenerate));
         
     }
 

@@ -7,7 +7,7 @@ namespace QaaS.Common.Generators.ConfigurationObjects.JsonConfigurations;
 public record JsonFieldReplacement
 {
     [Required, Description("The path (JSONPath query language Feb 2024, by Stefan Gossner) of the field to inject to")]
-    public string Path { get; set; }
+    public string Path { get; set; } = string.Empty;
     
     [Description("The type of static field injection to use")]
     public InjectionValueType ValueType { get; set; } = InjectionValueType.Null;

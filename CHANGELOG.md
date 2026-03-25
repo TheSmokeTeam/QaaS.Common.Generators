@@ -4,12 +4,20 @@ This file is generated automatically from CI from git history.
 
 ## Unreleased
 
+- fix(generators): clean solution build warnings
 - chore(deps): bump framework packages
 - docs(generators): add hook XML summaries
 - docs(changelog): add automated changelog
 
 ## 3.1.3-alpha.1 - 2026-03-22
 
+- No changes recorded.
+
+## 3.1.3 - 2026-03-23
+
+- chore(deps): bump framework packages
+- docs(generators): add hook XML summaries
+- docs(changelog): add automated changelog
 - chore: consume framework 1.2.5-alpha.4
 - docs(generators): describe manual value field
 

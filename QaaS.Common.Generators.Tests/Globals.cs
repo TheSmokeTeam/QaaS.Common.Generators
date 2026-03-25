@@ -33,7 +33,7 @@ public static class Globals
             TGenerator generator,
             Func<IImmutableList<SessionData>, IImmutableList<DataSource>, IEnumerable<Data<object>>> generateFunc,
             int numberOfItemsToGenerate,
-            Action<Mock<TGenerator>> configureMock = null)
+            Action<Mock<TGenerator>>? configureMock = null)
         where TGenerator : class, IGenerator
     {
         // Configure mock if needed

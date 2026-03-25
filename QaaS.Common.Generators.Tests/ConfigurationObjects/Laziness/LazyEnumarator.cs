@@ -9,7 +9,7 @@ public class LazyEnumerator<T>(IEnumerator<T> innerEnumerator, SideEffectTracker
 {
     public T Current => innerEnumerator.Current;
 
-    object IEnumerator.Current => Current;
+    object? IEnumerator.Current => Current;
 
     public bool MoveNext()
     {

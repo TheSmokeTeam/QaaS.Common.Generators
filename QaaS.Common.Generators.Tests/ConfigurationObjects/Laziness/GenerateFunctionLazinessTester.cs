@@ -141,7 +141,6 @@ public static class GenerateFunctionLazinessTester
                 
             // Third iteration (if requested)
             var thirdCount = 0;
-            const int maxIterations = 3;
             if (iterations > 2)
             {
                 thirdCount = wrappedGenerator.Count();
@@ -207,7 +206,6 @@ public static class GenerateFunctionLazinessTester
         {
             // Run multiple times with potentially different conditions
             // We run testRuns iterations to check for consistency
-            const int minimumRuns = 2;
             for (var testNum = 0; testNum < testRuns; testNum++)
             {
                 var wrappedGenerator = CreateLazyWrapper(generatorFunc, out var localSideEffectCounter);
@@ -230,7 +228,7 @@ public static class GenerateFunctionLazinessTester
             // If all counts are the same, it's deterministic
             // This is a simplified test - real non-determinism would depend on runtime factors
             // We require at least minimumRuns to make a meaningful comparison
-            return sideEffectCounts.Distinct().Count() <= 1;
+            return sideEffectCounts.Count >= 2 && sideEffectCounts.Distinct().Count() <= 1;
         }
         catch (Exception ex)
         {

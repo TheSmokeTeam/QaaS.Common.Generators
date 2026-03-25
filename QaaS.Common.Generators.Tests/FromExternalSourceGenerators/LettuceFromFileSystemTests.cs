@@ -65,7 +65,7 @@ public class LettuceFromFileSystemTests
     {
         // Arrange
         var actualMessage = "";
-        ArgumentException argumentException = null;
+        ArgumentException? argumentException = null;
         
         // Act
         try
@@ -75,11 +75,12 @@ public class LettuceFromFileSystemTests
         }
         catch (TargetInvocationException exception)
         {
-            actualMessage = exception.InnerException.Message;
+            actualMessage = exception.InnerException!.Message;
             argumentException = (exception.InnerException as ArgumentException)!;
         }
         
         // Assert
-        Assert.That(actualMessage.Contains(exceptionType) && argumentException!.GetType()!=null);
+        Assert.That(argumentException, Is.Not.Null);
+        Assert.That(actualMessage, Does.Contain(exceptionType));
     }
 }

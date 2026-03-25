@@ -8,7 +8,7 @@ namespace QaaS.Common.Generators.ConfigurationObjects.FromExternalSourceConfigur
 /// </summary>
 public class SerializedLoadedData
 {
-    public byte[] Content { get; init; }
+    public byte[] Content { get; init; } = [];
     public MetaData? MetaData { get; init; }
-    public string FullKey { get; init; }
+    public string FullKey { get; init; } = string.Empty;
 }

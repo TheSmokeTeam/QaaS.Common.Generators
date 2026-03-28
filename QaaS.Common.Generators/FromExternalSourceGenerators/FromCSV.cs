@@ -12,6 +12,7 @@ namespace QaaS.Common.Generators.FromExternalSourceGenerators;
 /// <summary>
 /// Reads CSV files from the configured file-system path and turns each row into generated data items.
 /// </summary>
+/// <qaas-docs group="External sources" subgroup="CSV files" />
 public class FromCSV : BaseFromFileSystem<FromCSVConfig>
 {
     public override IEnumerable<Data<object>> Generate(

@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Immutable;
 using System.IO.Abstractions;
 using System.Reflection;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Moq;
 using Moq.Protected;
@@ -111,6 +112,64 @@ public class FromFileSystemTests
         }
 
         Assert.That(areEqual);
+    }
+
+    [Test]
+    public void LoadAndValidateConfiguration_WhenDataArrangeOrderIsOmitted_DefaultsToUnordered()
+    {
+        var configuration = new ConfigurationBuilder()
+            .AddInMemoryCollection(new Dictionary<string, string?>
+            {
+                ["FileSystem:Path"] = DirectoryRelativePath
+            })
+            .Build();
+        var generator = new FromFileSystem
+        {
+            Context = Globals.Context
+        };
+
+        var validationResults = generator.LoadAndValidateConfiguration(configuration);
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(validationResults, Is.Empty);
+            Assert.That(generator.Configuration.DataArrangeOrder, Is.EqualTo(DataArrangeOrder.Unordered));
+            Assert.That(generator.Configuration.FileSystem?.Path, Is.EqualTo(DirectoryRelativePath));
+        });
+    }
+
+    [Test]
+    public void LoadAndValidateConfiguration_WhenFileSystemSectionIsMissing_ReturnsIndicativeValidationMessage()
+    {
+        var generator = new FromFileSystem
+        {
+            Context = Globals.Context
+        };
+
+        var validationResults = generator.LoadAndValidateConfiguration(new ConfigurationBuilder().Build());
+
+        Assert.That(validationResults!.Select(result => result.ErrorMessage),
+            Has.One.EqualTo("GeneratorConfiguration:FileSystem is required for FromFileSystem generators."));
+    }
+
+    [Test]
+    public void TestGenerate_WhenFileSystemPathIsMissing_ThrowsIndicativeArgumentException()
+    {
+        var generator = new FromFileSystem
+        {
+            Configuration = new FromFileSystemConfig
+            {
+                FileSystem = new FileSystemConfig()
+            },
+            Context = Globals.Context
+        };
+
+        var exception = Assert.Throws<ArgumentException>(() => generator.Generate(
+            new List<SessionData>().ToImmutableList(),
+            new List<DataSource>().ToImmutableList()).ToList());
+
+        Assert.That(exception!.Message,
+            Does.Contain("FromFileSystem requires GeneratorConfiguration.FileSystem.Path to be configured."));
     }
 
     [Test,

@@ -17,8 +17,9 @@ public abstract class BaseFromFileSystem<TFromFileSystemConfig>: BaseExternalSou
 
     protected override IEnumerable<KeyValuePair<string, string>> LoadObjectsMetadata()
     {
-        var fullPath = Path.Combine(_currentDirectory!, Configuration.FileSystem!.Path!);
-        return _fileSystem!.Directory.GetFiles(fullPath, Configuration.FileSystem!.SearchPattern,
+        var fileSystemConfiguration = RequireFileSystemConfiguration();
+        var fullPath = Path.Combine(_currentDirectory!, fileSystemConfiguration.Path!);
+        return _fileSystem!.Directory.GetFiles(fullPath, fileSystemConfiguration.SearchPattern,
                 SearchOption.AllDirectories)
             .Select(fileName => new KeyValuePair<string, string>(fileName, fileName));
     }
@@ -37,13 +38,30 @@ public abstract class BaseFromFileSystem<TFromFileSystemConfig>: BaseExternalSou
     protected override string? GetStorageKeyFromData(string key) =>
         Configuration.StorageMetaData switch
         {
-            StorageMetaData.RelativePath => Path.GetRelativePath(Configuration.FileSystem!.Path!, key),
+            StorageMetaData.RelativePath => Path.GetRelativePath(RequireFileSystemConfiguration().Path!, key),
             StorageMetaData.ItemName => Path.GetFileName(key),
             StorageMetaData.FullPath => key,
             StorageMetaData.None => null,
             _ => throw new NotSupportedException($"{nameof(StorageMetaData)}" +
                                                  $" {Configuration.StorageMetaData} not supported")
         };
+
+    private FileSystemConfig RequireFileSystemConfiguration()
+    {
+        if (Configuration.FileSystem == null)
+        {
+            throw new ArgumentException(
+                $"{GetType().Name} requires GeneratorConfiguration.FileSystem to be configured.");
+        }
+
+        if (string.IsNullOrWhiteSpace(Configuration.FileSystem.Path))
+        {
+            throw new ArgumentException(
+                $"{GetType().Name} requires GeneratorConfiguration.FileSystem.Path to be configured.");
+        }
+
+        return Configuration.FileSystem;
+    }
 
     /// <summary>
     /// Process the file contents

@@ -54,10 +54,11 @@ public abstract class
     protected IEnumerable<KeyValuePair<string, TFilesProperties>> ArrangeDataInOrder(
         IEnumerable<KeyValuePair<string, TFilesProperties>> objectProperties)
     {
+        var dataArrangeOrder = Configuration.DataArrangeOrder ?? DataArrangeOrder.Unordered;
         Context.Logger.LogInformation("Arranging metadata source " +
                                       "by the given DataArrangeOrder {DataArrangeOrder}",
-            Configuration.DataArrangeOrder.ToString());
-        return Configuration.DataArrangeOrder switch
+            dataArrangeOrder);
+        return dataArrangeOrder switch
         {
             DataArrangeOrder.AsciiAsc => objectProperties.OrderBy(item
                 => item.Key),
@@ -69,7 +70,7 @@ public abstract class
                 => ExtractNumericValue(item.Key)),
             DataArrangeOrder.Unordered => objectProperties,
             _ => throw new NotSupportedException("DataArrangeOrder" +
-                                                 $" {Configuration.DataArrangeOrder} not supported")
+                                                 $" {dataArrangeOrder} not supported")
         };
     }
 

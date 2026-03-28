@@ -14,6 +14,7 @@ namespace QaaS.Common.Generators.FromDataSourcesGenerators;
 /// Generates data from the enumerable of data sources it receives, presumes all items in the enumerable are serialized
 /// and can be treated as a byte array
 /// </summary>
+/// <qaas-docs group="Existing data sources" subgroup="Session data reuse" />
 public class FromSessionDataDataSources : BaseGenerator<List<FromSessionDataDataSourcesConfiguration>>
 {
     /// <inheritdoc />

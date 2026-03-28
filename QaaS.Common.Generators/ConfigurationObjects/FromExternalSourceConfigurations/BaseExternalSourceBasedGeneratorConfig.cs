@@ -5,14 +5,16 @@ namespace QaaS.Common.Generators.ConfigurationObjects.FromExternalSourceConfigur
 
 public record BaseExternalSourceBasedGeneratorConfig
 {
-    [Required, Description(
+    [Description(
          "In which order to arrange the loaded data. Arranges data based of the key identifier of the item.  Options: " +
          "[ `AsciiAsc` - orders by the ascii value ascending / " +
          "`AsciiDesc` - orders by the ascii value descending / " +
          "`FirstNumericalAsc` - orders by the first found numerical value in the string ascending /" +
          "`FirstNumericalDesc` - orders by the first found numerical value in the string descending /" +
-         "'Unordered' - does not order the data ]")]
-    public DataArrangeOrder? DataArrangeOrder { get; set; }
+         "'Unordered' - does not order the data ]"),
+     DefaultValue(typeof(DataArrangeOrder), nameof(global::QaaS.Common.Generators.ConfigurationObjects.FromExternalSourceConfigurations.DataArrangeOrder.Unordered))]
+    public DataArrangeOrder? DataArrangeOrder { get; set; } =
+        global::QaaS.Common.Generators.ConfigurationObjects.FromExternalSourceConfigurations.DataArrangeOrder.Unordered;
 
     [Range(0, int.MaxValue),
      Description("The number of items to generate out of the given data sources (If count is bigger than" +

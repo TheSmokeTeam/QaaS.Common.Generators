@@ -5,7 +5,8 @@ namespace QaaS.Common.Generators.ConfigurationObjects.FromExternalSourceConfigur
 
 public record FileSystemConfig
 {
-    [Required, Description("The path of the directory containing the relevant files")]
+    [Required(ErrorMessage = "GeneratorConfiguration:FileSystem:Path is required for FromFileSystem generators."),
+     Description("The path of the directory containing the relevant files")]
     public string? Path { get; set; }
     
     [Description("The search string to match against the names of files in path." +

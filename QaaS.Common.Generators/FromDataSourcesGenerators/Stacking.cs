@@ -10,6 +10,7 @@ namespace QaaS.Common.Generators.FromDataSourcesGenerators;
 /// <summary>
 /// Combines multiple data sources by taking a configured number of items from each source in turn.
 /// </summary>
+/// <qaas-docs group="Existing data sources" subgroup="Stacking" />
 public class Stacking: BaseGenerator<StackingConfiguration>
 {
     public override IEnumerable<Data<object>> Generate(IImmutableList<SessionData> sessionDataList, 

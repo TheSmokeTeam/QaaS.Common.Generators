@@ -14,6 +14,7 @@ namespace QaaS.Common.Generators.FromDataLakeGenerator;
 /// <summary>
 /// Retrieves rows from the configured data lake query and exposes each row as a generated JSON object.
 /// </summary>
+/// <qaas-docs group="External sources" subgroup="Data lake" />
 public class FromDataLake: BaseGenerator<FromDataLakeConfiguration>
 {
     public override IEnumerable<Data<object>> Generate(IImmutableList<SessionData> sessionDataList, 

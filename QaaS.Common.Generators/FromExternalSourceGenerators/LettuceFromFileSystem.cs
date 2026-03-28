@@ -9,6 +9,7 @@ namespace QaaS.Common.Generators.FromExternalSourceGenerators;
 /// <summary>
 /// Retrieves lettuce-formatted files from the configured file-system path and exposes them as generated messages with their routing key metadata.
 /// </summary>
+/// <qaas-docs group="External sources" subgroup="Lettuce files" />
 public class LettuceFromFileSystem : BaseFromFileSystem<LettuceFromFileSystemConfig>
 {
     /// <summary>

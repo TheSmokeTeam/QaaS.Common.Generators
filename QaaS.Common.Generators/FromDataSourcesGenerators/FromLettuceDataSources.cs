@@ -10,6 +10,7 @@ namespace QaaS.Common.Generators.FromDataSourcesGenerators;
 /// Generates data from the enumerable of data sources it receives that is in `Lettuce` file format,
 /// presumes all items in the enumerable are deserialized into <see cref="SerializationType.Json"/>
 /// </summary>
+/// <qaas-docs group="Existing data sources" subgroup="Lettuce reuse" />
 public class FromLettuceDataSources : BaseFromDataSourcesGenerator<FromLettuceDataSourcesConfiguration>
 {
     /// <inheritdoc />

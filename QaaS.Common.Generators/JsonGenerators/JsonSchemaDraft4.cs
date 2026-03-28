@@ -8,6 +8,7 @@ namespace QaaS.Common.Generators.JsonGenerators;
 /// <summary>
 /// Generates JSON data that conforms to a configured JSON Schema Draft 4 document.
 /// </summary>
+/// <qaas-docs group="Structured payloads" subgroup="Schema-based JSON" />
 public class JsonSchemaDraft4 : BaseJsonGenerator<JsonSchemaConfiguration>
 {
     /// <inheritdoc />

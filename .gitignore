@@ -376,3 +376,6 @@ venv.bak/
 Chart.lock
 **/charts**
 
+# Allure test reports
+allure-results/
+

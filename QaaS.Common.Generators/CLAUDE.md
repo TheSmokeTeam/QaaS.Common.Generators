@@ -16,7 +16,7 @@ processors / assertions.
   `JsonValueGenerators/`, `JsonParsers/`, `JsonExtensions/`,
   `JsonNodeFieldInjector.cs`.
 - `FromDataSourcesGenerators/` — `FromDataSources`,
-  `FromLettuceDataSources`, `FromSessionDataDataSources`, `Stacking`.
+  `FromLettuceDataSources`, `FromSessionDataDataSources`, `Stacking`, `FromPcapDataSources`.
 - `CsvGenerators/` — RFC-4180 `FromCSV` + `LettuceFromFileSystem`,
   `FromFileSystem`.
 - `FromExternalSourceGenerators/`, `FromDataLakeGenerator/` —

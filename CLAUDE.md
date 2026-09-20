@@ -28,7 +28,7 @@ csharpier format <changed-files>
 schema).
 
 **DataSource:** `FromDataSources`, `FromLettuceDataSources`,
-`FromSessionDataDataSources`, `Stacking`.
+`FromSessionDataDataSources`, `Stacking`, `FromPcapDataSources`.
 
 **Files / templates:** `FromCSV` (RFC-4180), `FromFileSystem`,
 `LettuceFromFileSystem`.

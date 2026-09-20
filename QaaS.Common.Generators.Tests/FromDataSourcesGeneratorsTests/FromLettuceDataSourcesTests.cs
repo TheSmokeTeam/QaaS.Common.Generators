@@ -1,4 +1,4 @@
-﻿using System.Reflection;
+using System.Reflection;
 using System.Text.Json.Nodes;
 using NUnit.Framework;
 using QaaS.Common.Generators.FromDataSourcesGenerators;
@@ -8,20 +8,20 @@ namespace QaaS.Common.Generators.Tests.FromDataSourcesGeneratorsTests;
 
 public class FromLettuceDataSourcesTests
 {
-    private static readonly MethodInfo? ConvertDataSourceDataToGenerateDataMethod = 
-        typeof(FromLettuceDataSources).GetMethod("ConvertDataSourceDataToGenerateData", 
+    private static readonly MethodInfo? ConvertDataSourceDataToGeneratedItemsMethod =
+        typeof(FromLettuceDataSources).GetMethod("ConvertDataSourceDataToGeneratedItems",
             BindingFlags.Instance | BindingFlags.NonPublic);
 
     private static IEnumerable<TestCaseData> TestConvertDataSourceToGenerateDataCaseSource()
     {
         yield return new TestCaseData(Array.Empty<byte>(), null).SetName("EmptyLettuceBodyWithNullRoutingKey");
         yield return new TestCaseData(Array.Empty<byte>(), "not null routing key").SetName("EmptyLettuceBodyWithRoutingKey");
-        yield return new TestCaseData(new byte[]{1,2,3,4,5}, null).SetName("LettuceBodyWithNullRoutingKey");
-        yield return new TestCaseData(new byte[]{1,2,3,4,5}, "not null routing key").SetName("LettuceBodyWithRoutingKey");
+        yield return new TestCaseData(new byte[] { 1, 2, 3, 4, 5 }, null).SetName("LettuceBodyWithNullRoutingKey");
+        yield return new TestCaseData(new byte[] { 1, 2, 3, 4, 5 }, "not null routing key").SetName("LettuceBodyWithRoutingKey");
     }
-    
+
     [Test, TestCaseSource(nameof(TestConvertDataSourceToGenerateDataCaseSource))]
-    public void TestConvertDataSourceDataToGenerateData_CallFunctionWithKnownLettuceJson_ShouldReturnExpectedData(
+    public void TestConvertDataSourceDataToGeneratedItems_CallFunctionWithKnownLettuceJson_ShouldReturnExpectedData(
         byte[] lettuceBody, string? lettuceRoutingKey)
     {
         // Arrange
@@ -38,10 +38,11 @@ public class FromLettuceDataSourcesTests
         {
             Body = lettuce
         };
-        
+
         // Act
-        var generatedData = (Data<object>)ConvertDataSourceDataToGenerateDataMethod!.Invoke(generator, 
-            new object?[] { data, "testSource"})!;
+        var result = (IEnumerable<Data<object>>)ConvertDataSourceDataToGeneratedItemsMethod!.Invoke(generator,
+            new object?[] { data, "testSource" })!;
+        var generatedData = result.Single();
         Assert.Multiple(() =>
         {
             // Assert

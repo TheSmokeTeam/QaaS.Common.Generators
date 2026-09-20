@@ -1,4 +1,4 @@
-﻿using System.Collections.Immutable;
+using System.Collections.Immutable;
 using Microsoft.Extensions.Logging;
 using QaaS.Common.Generators.ConfigurationObjects.FromDataSourcesConfigurations;
 using QaaS.Framework.SDK.DataSourceObjects;
@@ -36,8 +36,12 @@ public abstract class BaseFromDataSourcesGenerator<TDataSourceConfig> : BaseGene
                     if (Configuration.Count != null && Configuration.Count == generatedItemsCounter) break;
 
                     Context.Logger.LogDebug("Generating data from Data Source {DataSourceName}", dataSource.Name);
-                    yield return ConvertDataSourceDataToGenerateData(data, dataSource.Name);
-                    generatedItemsCounter++;
+                    foreach (var item in ConvertDataSourceDataToGeneratedItems(data, dataSource.Name))
+                    {
+                        if (Configuration.Count != null && Configuration.Count == generatedItemsCounter) break;
+                        yield return item;
+                        generatedItemsCounter++;
+                    }
                 } while (enumerator.MoveNext());
 
                 var expectedGeneratedItems = Configuration.Count ?? generatedItemsCounter;
@@ -61,11 +65,12 @@ public abstract class BaseFromDataSourcesGenerator<TDataSourceConfig> : BaseGene
     }
 
     /// <summary>
-    /// Converts the given data source item to the generated `Data` object
+    /// Converts the given data source item to one or more generated <see cref="Data{T}"/> objects.
+    /// Implementations may yield a single item (1:1) or multiple items (1:many).
     /// </summary>
     /// <param name="data"> The data source item to convert to generated data </param>
     /// <param name="dataSourceName"> The name of the data source the data item came from </param>
-    /// <returns> A generated data fit to be used in sessions </returns>
-    protected abstract Data<object> ConvertDataSourceDataToGenerateData(
+    /// <returns> An enumerable of generated data items fit to be used in sessions </returns>
+    protected abstract IEnumerable<Data<object>> ConvertDataSourceDataToGeneratedItems(
         Data<object> data, string dataSourceName);
 }

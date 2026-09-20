@@ -1,4 +1,4 @@
-﻿using System.Text.Json.Nodes;
+using System.Text.Json.Nodes;
 using QaaS.Common.Generators.ConfigurationObjects.FromDataSourcesConfigurations;
 using QaaS.Framework.SDK.Session.DataObjects;
 using QaaS.Framework.SDK.Session.MetaDataObjects;
@@ -14,7 +14,7 @@ namespace QaaS.Common.Generators.FromDataSourcesGenerators;
 public class FromLettuceDataSources : BaseFromDataSourcesGenerator<FromLettuceDataSourcesConfiguration>
 {
     /// <inheritdoc />
-    protected override Data<object> ConvertDataSourceDataToGenerateData(
+    protected override IEnumerable<Data<object>> ConvertDataSourceDataToGeneratedItems(
         Data<object> data, string dataSourceName)
     {
         if (data.Body is not JsonNode lettuce)
@@ -39,7 +39,7 @@ public class FromLettuceDataSources : BaseFromDataSourcesGenerator<FromLettuceDa
                     RoutingKey = lettuceRoutingKey
                 }
             };
-        return new Data<object>
+        yield return new Data<object>
         {
             Body = lettuceBody,
             MetaData = metaData
